@@ -21,6 +21,9 @@ for ele in root.find(path, namespaces=ns):
     if 'given' in ele.tag:
         ele.text = "Family Name"
 
+# Saves the cleaned data
+tree.write('out.xml')
+
 # Convert the modified XML to text and json
 text = ElementTree.tostring(root, encoding='unicode')
 json_data = xmltodict.parse(text)
