@@ -12,14 +12,25 @@ ElementTree.register_namespace('', "urn:hl7-org:v3")
 tree = ElementTree.parse('sample.xml')
 root = tree.getroot()
 
-ns = {'xmlns': "urn:hl7-org:v3"}
-path = './xmlns:recordTarget/xmlns:patientRole/xmlns:patient/'
+replace_dict = {
+    "{urn:hl7-org:v3}family": "Patient Family Name",
+    "{urn:hl7-org:v3}given": "Patient Name",
+    "{urn:hl7-org:v3}city": "Address",
+    "{urn:hl7-org:v3}state": "Address",
+    "{urn:hl7-org:v3}country": "Address",
+    "{urn:hl7-org:v3}postalCode": "Address",
+    "{urn:hl7-org:v3}streetAddressLine": "Address"
 
-for ele in root.find(path, namespaces=ns):
-    if 'family' in ele.tag:
-        ele.text = "Patient Family Name"
-    if 'given' in ele.tag:
-        ele.text = "Family Name"
+}
+replace_dict_keys = replace_dict.keys()
+
+def find_in_child(children=[root]):
+    for child in children:
+        if child.getchildren():
+            find_in_child(child.getchildren())
+        if child.tag in replace_dict_keys:
+            child.text = replace_dict[child.tag]
+find_in_child(root)
 
 # Saves the cleaned data
 tree.write('out.xml')
