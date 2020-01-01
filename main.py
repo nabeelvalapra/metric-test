@@ -24,13 +24,15 @@ replace_dict = {
 }
 replace_dict_keys = replace_dict.keys()
 
-def find_in_child(children=[root]):
+# Recursively finds the children and replaces
+# the text with replace dict
+def find_replace_child_text(children=[root]):
     for child in children:
         if child.getchildren():
             find_in_child(child.getchildren())
         if child.tag in replace_dict_keys:
             child.text = replace_dict[child.tag]
-find_in_child(root)
+find_replace_child_text(root)
 
 # Saves the cleaned data
 tree.write('out.xml')
